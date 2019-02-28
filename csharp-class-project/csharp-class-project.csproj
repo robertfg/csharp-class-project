@@ -46,7 +46,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IPokeParser.cs" />
-    <Compile Include="PokeList.cs" />
     <Compile Include="Pokemon.cs" />
     <Compile Include="PokeParser.cs" />
     <Compile Include="Program.cs" />
@@ -54,6 +53,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Pokemon.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

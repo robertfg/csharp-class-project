@@ -8,5 +8,6 @@ namespace csharp_class_project
 {
     interface IPokeParser
     {
+        void ReadFromFile();
     }
 }
