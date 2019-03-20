@@ -45,7 +45,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CLI.cs" />
+    <Compile Include="GetFullPath.cs" />
+    <Compile Include="IPokedexParser.cs" />
     <Compile Include="IPokeParser.cs" />
+    <Compile Include="Menu.cs" />
+    <Compile Include="Pokedex.cs" />
+    <Compile Include="PokedexParser.cs" />
     <Compile Include="Pokemon.cs" />
     <Compile Include="PokeParser.cs" />
     <Compile Include="Program.cs" />

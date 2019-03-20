@@ -24,6 +24,9 @@ namespace csharp_class_project
 
     public class Pokemon
     {
+        // This variable does not exist in the file.
+        public int Counter { get; set; }
+
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
 

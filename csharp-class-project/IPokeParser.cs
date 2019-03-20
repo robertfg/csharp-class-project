@@ -8,6 +8,6 @@ namespace csharp_class_project
 {
     interface IPokeParser
     {
-        void ReadFromFile();
+        List<Pokemon> ReadFromFile(string fileName);
     }
 }

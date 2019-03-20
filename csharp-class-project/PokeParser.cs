@@ -10,19 +10,10 @@ namespace csharp_class_project
 {
     class PokeParser : IPokeParser
     {
-        public void ReadFromFile()
+        List<Pokemon> IPokeParser.ReadFromFile(string fileName)
         {
-            string currentDir = Directory.GetCurrentDirectory();
-
-            DirectoryInfo dir = new DirectoryInfo(currentDir);
-
-            var fileName = Path.Combine(dir.FullName, "Pokemon.json");
-            var pokemons = DeserializePokemon(fileName);
-
-            foreach (var pokemon in pokemons)
-            {
-                Console.WriteLine(pokemon.Name + " " + pokemon.Url);
-            }
+            var pokemons = DeserializePokemon(GetFullPath.ReturnPath(fileName));
+            return pokemons;
         }
 
         public static List<Pokemon> DeserializePokemon(string fileName)
@@ -33,6 +24,12 @@ namespace csharp_class_project
             using (var jsonReader = new JsonTextReader(reader))
             {
                 rootObject = serializer.Deserialize<Rootobject>(jsonReader);
+            }
+
+            // Add the Counter:
+            for (var i = 0; i < rootObject.Pokemons.Length; i++)
+            {
+                rootObject.Pokemons[i].Counter = i + 1;
             }
 
             return rootObject.Pokemons.ToList<Pokemon>();
