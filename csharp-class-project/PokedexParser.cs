@@ -28,7 +28,7 @@ namespace csharp_class_project
             return null;
         }
 
-        public void WriteToFile(string fileName, Pokemon pokemon)
+        public void WriteToFile(string fileName, List<MyPokemon> pokemon)
         {
             bool appendFile = false;
             if (File.Exists(fileName))
@@ -48,7 +48,7 @@ namespace csharp_class_project
             //pokedex.Add(myPokemon);
 
             var serializer = new JsonSerializer();
-            using (var writer = new StreamWriter(fileName, append: appendFile))
+            using (var writer = new StreamWriter(fileName))
             using (var jsonWriter = new JsonTextWriter(writer))
             {
                 //serializer.Serialize(jsonWriter, pokedex);

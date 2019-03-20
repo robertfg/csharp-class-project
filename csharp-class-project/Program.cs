@@ -102,8 +102,12 @@ namespace csharp_class_project
         {
             string input;
             int selection = 0;
+            int count = 1;
             int pageSize = 20;
             int pageCount = 1;
+
+            // Here's where I'll store my list of pokemon to add to my pokedex
+            List<MyPokemon> myPokemons = new List<MyPokemon>();
 
             var pageOfPokemons = pokemons.Take(pageSize);
 
@@ -126,10 +130,23 @@ namespace csharp_class_project
                 }
                 else if (int.TryParse(input, out selection))
                 {
-                    pokedex.WriteToFile(fileName, pokemons[selection - 1]);
+                    // Add the selected pokemon to the list
+                    MyPokemon pokey = new MyPokemon();
+
+                    pokey.Counter = count;
+                    pokey.Name = pokemons[selection - 1].Name;
+                    pokey.Url = pokemons[selection - 1].Url;
+                    pokey.Comment = "";
+
+                    myPokemons.Add(pokey);
+
+                    count++;
                 }
 
             } while (!input.ToUpper().Equals("M"));
+
+            // Write entire list to file.
+            pokedex.WriteToFile(fileName, myPokemons);
         }
     }
 }

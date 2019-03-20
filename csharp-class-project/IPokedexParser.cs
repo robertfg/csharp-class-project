@@ -12,7 +12,7 @@ namespace csharp_class_project
 
         List<MyPokemon> ReadFromFile(string fileName);
 
-        void WriteToFile(string fileName, Pokemon pokemon);
+        void WriteToFile(string fileName, List<MyPokemon> myPokemons);
 
         void DeleteFile(string fileName);
     }
