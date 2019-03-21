@@ -29,7 +29,7 @@ namespace csharp_class_project
             // Add the Counter:
             for (var i = 0; i < rootObject.Pokemons.Length; i++)
             {
-                rootObject.Pokemons[i].Counter = i + 1;
+                rootObject.Pokemons[i].Counter = i;
             }
 
             return rootObject.Pokemons.ToList<Pokemon>();

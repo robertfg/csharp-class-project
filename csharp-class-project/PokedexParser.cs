@@ -30,28 +30,16 @@ namespace csharp_class_project
 
         public void WriteToFile(string fileName, List<MyPokemon> pokemon)
         {
-            bool appendFile = false;
-            if (File.Exists(fileName))
-            {
-                appendFile = true;
-            }
-
-            // Convert pokemon to myPokemon
-            //var myPokemon = new MyPokemon();
-
-            //myPokemon.Counter = pokemon.Counter;
-            //myPokemon.Name = pokemon.Name;
-            //myPokemon.Url = pokemon.Url;
-
-            //// TODO: Write as array?  Or write as MyPokemon?
-            //var pokedex = new Pokedex().Pokemons;
-            //pokedex.Add(myPokemon);
+            //bool appendFile = false;
+            //if (File.Exists(fileName))
+            //{
+            //    appendFile = true;
+            //}
 
             var serializer = new JsonSerializer();
             using (var writer = new StreamWriter(fileName))
             using (var jsonWriter = new JsonTextWriter(writer))
             {
-                //serializer.Serialize(jsonWriter, pokedex);
                 serializer.Serialize(jsonWriter, pokemon);
             }
         }

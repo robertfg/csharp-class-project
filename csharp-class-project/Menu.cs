@@ -43,6 +43,7 @@ namespace csharp_class_project
                 if (!valid)
                 {
                     Console.WriteLine("'" + option + "' is not a valid option. Please provide a number from 1 - 4.");
+                    Console.WriteLine();
                 }
             }
             while (!valid);

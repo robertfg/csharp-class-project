@@ -18,16 +18,17 @@ namespace csharp_class_project
 
             // Get pokemon info:
             IPokeParser pokey = new PokeParser();
-            IList<Pokemon> pokemons = pokey.ReadFromFile(pokemonFileName);
+            List<Pokemon> pokemons = pokey.ReadFromFile(pokemonFileName);
 
             // Open pokedex file:
             IPokedexParser pokedex = new PokedexParser();
-            IEnumerable<MyPokemon> myPokemons = pokedex.ReadFromFile(pokedexFileName);
+            List<MyPokemon> myPokemons = pokedex.ReadFromFile(pokedexFileName);
 
             int pokedexCount;
             if (myPokemons == null)
             {
                 pokedexCount = 0;
+                myPokemons = new List<MyPokemon>();
             }
             else
             {
@@ -44,10 +45,17 @@ namespace csharp_class_project
                 switch (option)
                 {
                     case 1:
-                        viewList(pokemons, pokedex, pokedexFileName);
+                        viewList(pokemons, myPokemons, ref pokedexCount, pokedex, pokedexFileName);
                         break;
                     case 2:
-                        modifyList(pokedex, pokedexFileName);
+                        if (pokedexCount == 0)
+                        {
+                            Console.WriteLine("Add some Pokemon first!");
+                        }
+                        else
+                        {
+                            modifyList(pokedex, myPokemons, pokedexCount, pokedexFileName);
+                        }
                         break;
                     case 3:
                         pokedex.DeleteFile(pokedexFileName);
@@ -56,7 +64,10 @@ namespace csharp_class_project
             }
         }
 
-        public static void modifyList(IPokedexParser pokedex, string fileName)
+        public static void modifyList(IPokedexParser pokedex,
+                                      List<MyPokemon> myPokemons,
+                                      int pokedexCount,
+                                      string fileName)
         {
             string input;
             int selection = 0;
@@ -64,11 +75,7 @@ namespace csharp_class_project
             int pageCount = 1;
 
             // Get pokemons
-            IEnumerable<MyPokemon> pokemons = pokedex.ReadFromFile(fileName);
-
-            int pokedexCount = pokemons.Count();
-
-            var pageOfPokemons = pokemons.Take(pageSize);
+            var pageOfPokemons = myPokemons.Take(pageSize);
 
             do
             {
@@ -85,7 +92,7 @@ namespace csharp_class_project
 
                 if (input.ToUpper().Equals("C"))
                 {
-                    pageOfPokemons = pokemons.Skip(pageSize * pageCount).Take(pageSize);
+                    pageOfPokemons = myPokemons.Skip(pageSize * pageCount).Take(pageSize);
                     pageCount++;
                 }
                 else if (int.TryParse(input, out selection))
@@ -96,18 +103,19 @@ namespace csharp_class_project
             } while (!input.ToUpper().Equals("M"));
         }
 
-        public static void viewList(IList<Pokemon> pokemons,
+        public static void viewList(List<Pokemon> pokemons,
+                                    List<MyPokemon> myPokemons,
+                                    ref int pokedexCount,
                                     IPokedexParser pokedex,
                                     string fileName)
         {
             string input;
             int selection = 0;
-            int count = 1;
             int pageSize = 20;
             int pageCount = 1;
 
             // Here's where I'll store my list of pokemon to add to my pokedex
-            List<MyPokemon> myPokemons = new List<MyPokemon>();
+            //List<MyPokemon> myPokemons = new List<MyPokemon>();
 
             var pageOfPokemons = pokemons.Take(pageSize);
 
@@ -117,7 +125,7 @@ namespace csharp_class_project
                 Console.WriteLine(string.Format("\t{0,-25}\t{1}", "----", "---"));
                 foreach (var pok in pageOfPokemons)
                 {
-                    Console.WriteLine($"{pok.Counter,3})\t{pok.Name,-25}\t{pok.Url}");
+                    Console.WriteLine($"{pok.Counter+1,3})\t{pok.Name,-25}\t{pok.Url}");
                 }
                 Console.WriteLine();
                 input = CLI.Prompt($"Enter a number to add the Pokemon to your Pokedex,\n" +
@@ -131,16 +139,17 @@ namespace csharp_class_project
                 else if (int.TryParse(input, out selection))
                 {
                     // Add the selected pokemon to the list
-                    MyPokemon pokey = new MyPokemon();
-
-                    pokey.Counter = count;
-                    pokey.Name = pokemons[selection - 1].Name;
-                    pokey.Url = pokemons[selection - 1].Url;
-                    pokey.Comment = "";
+                    MyPokemon pokey = new MyPokemon
+                    {
+                        Counter = pokedexCount,
+                        Name = pokemons[selection-1].Name,
+                        Url = pokemons[selection-1].Url,
+                        Comment = ""
+                    };
 
                     myPokemons.Add(pokey);
 
-                    count++;
+                    pokedexCount++;
                 }
 
             } while (!input.ToUpper().Equals("M"));
