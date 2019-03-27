@@ -58,7 +58,10 @@ namespace csharp_class_project
                         }
                         break;
                     case 3:
+                        // Delete the file and re-initialize the Pokedex.
                         pokedex.DeleteFile(pokedexFileName);
+                        pokedexCount = 0;
+                        myPokemons = new List<MyPokemon>();
                         break;
                 }
             }
@@ -87,7 +90,7 @@ namespace csharp_class_project
                     Console.WriteLine($"  \t{pok.Url}");
                 }
                 Console.WriteLine();
-                input = CLI.Prompt($"Enter a number to edit/delete that Pokemon, \n" +
+                input = CLI.Prompt($"Enter a number to edit/delete that Pokemon, " +
                                    $"or 'M' to return to the Main Menu:  ");
 
                 if (input.ToUpper().Equals("C"))
@@ -97,7 +100,19 @@ namespace csharp_class_project
                 }
                 else if (int.TryParse(input, out selection))
                 {
+                    Console.Write("Enter your Comment or 'D' to Delete:  ");
+                    input = Console.ReadLine();
                     Console.WriteLine("");
+
+                    // Evaluate response:
+                    if (input.ToUpper().Equals("D"))
+                    {
+                        myPokemons.RemoveAt(selection-1);
+                    }
+                    else
+                    {
+                        myPokemons[selection - 1].Comment = input;
+                    }
                 }
 
             } while (!input.ToUpper().Equals("M"));
@@ -138,18 +153,28 @@ namespace csharp_class_project
                 }
                 else if (int.TryParse(input, out selection))
                 {
-                    // Add the selected pokemon to the list
-                    MyPokemon pokey = new MyPokemon
+                    // Check for duplicates
+                    if ( myPokemons.Any(pok => pok.Name == pokemons[selection - 1].Name))
                     {
-                        Counter = pokedexCount,
-                        Name = pokemons[selection-1].Name,
-                        Url = pokemons[selection-1].Url,
-                        Comment = ""
-                    };
+                        Console.WriteLine("This Pokemon is already in the Pokedex.  Please select another.");
+                        Console.WriteLine("Press any key to continue.");
+                        Console.ReadKey();
+                    }
+                    else
+                    {
+                        // Add the selected pokemon to the list
 
-                    myPokemons.Add(pokey);
+                        pokedexCount++;
+                        MyPokemon pokey = new MyPokemon
+                        {
+                            Counter = pokedexCount,
+                            Name = pokemons[selection - 1].Name,
+                            Url = pokemons[selection - 1].Url,
+                            Comment = ""
+                        };
 
-                    pokedexCount++;
+                        myPokemons.Add(pokey);
+                    }
                 }
 
             } while (!input.ToUpper().Equals("M"));
