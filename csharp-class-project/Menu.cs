@@ -21,7 +21,7 @@ namespace csharp_class_project
             Console.WriteLine();
             for (int i = 0; i < _options.Length; i++)
             {
-                Console.WriteLine($"  {i + 1}) {_options[i]}");
+                Console.WriteLine($"  {i + 1, 3})\t{_options[i]}");
             }
             Console.WriteLine();
         }
@@ -36,13 +36,13 @@ namespace csharp_class_project
 
             do
             {
-                option = CLI.Prompt($"Please select an option (1-{_options.Length}): ");
+                option = CLI.Prompt($" Please select an option (1-{_options.Length}):  ");
                 bool canParse = int.TryParse(option, out parsedOption);
                 valid = canParse && parsedOption > 0 && parsedOption <= 4;
 
                 if (!valid)
                 {
-                    Console.WriteLine("'" + option + "' is not a valid option. Please provide a number from 1 - 4.");
+                    Console.WriteLine(" '" + option + "' is not a valid option. Please provide a number from 1 - 4.");
                     Console.WriteLine();
                 }
             }

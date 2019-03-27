@@ -48,6 +48,7 @@ namespace csharp_class_project
                         viewList(pokemons, myPokemons, ref pokedexCount, pokedex, pokedexFileName);
                         break;
                     case 2:
+                        // Only modify the pokedex if it contains pokemon
                         if (pokedexCount == 0)
                         {
                             Console.WriteLine("Add some Pokemon first!");
@@ -74,8 +75,8 @@ namespace csharp_class_project
         {
             string input;
             int selection = 0;
-            int pageSize = 20;
-            int pageCount = 1;
+            int pageSize = 10;
+            int pageCount = 0;
 
             // Get pokemons
             var pageOfPokemons = myPokemons.Take(pageSize);
@@ -86,21 +87,21 @@ namespace csharp_class_project
                 Console.WriteLine(string.Format("\t{0,-40}\t{1}", "--------", "-------"));
                 foreach (var pok in pageOfPokemons)
                 {
-                    Console.WriteLine($"  {pok.Counter,3})\t{pok.Name,-40}\t{pok.Comment}");
+                    Console.WriteLine($"  {pok.Counter+1,3})\t{pok.Name,-40}\t{pok.Comment}");
                     Console.WriteLine($"  \t{pok.Url}");
                 }
                 Console.WriteLine();
-                input = CLI.Prompt($"Enter a number to edit/delete that Pokemon, " +
-                                   $"or 'M' to return to the Main Menu:  ");
+                input = CLI.Prompt($" Enter a number to edit/delete that Pokemon,\n" +
+                                   $" 'C' to Continue, or 'M' to return to the Main Menu:  ");
 
                 if (input.ToUpper().Equals("C"))
                 {
-                    pageOfPokemons = myPokemons.Skip(pageSize * pageCount).Take(pageSize);
                     pageCount++;
+                    pageOfPokemons = myPokemons.Skip(pageSize * pageCount).Take(pageSize);
                 }
                 else if (int.TryParse(input, out selection))
                 {
-                    Console.Write("Enter your Comment or 'D' to Delete:  ");
+                    Console.Write(" Enter your Comment or 'D' to Delete:  ");
                     input = Console.ReadLine();
                     Console.WriteLine("");
 
@@ -108,14 +109,26 @@ namespace csharp_class_project
                     if (input.ToUpper().Equals("D"))
                     {
                         myPokemons.RemoveAt(selection-1);
+
+                        // Update counters
+                        for(var i = 0; i < myPokemons.Count(); i++)
+                        {
+                            myPokemons[i].Counter = i;
+                        }
+
+                        // Get a fresh page of renumbered pokemon
+                        pageOfPokemons = myPokemons.Skip(pageSize * pageCount).Take(pageSize);
                     }
                     else
                     {
-                        myPokemons[selection - 1].Comment = input;
+                        myPokemons[selection-1].Comment = input;
                     }
                 }
 
-            } while (!input.ToUpper().Equals("M"));
+            } while (!input.ToUpper().Equals("M") && pageOfPokemons.Count() != 0);
+
+            // Write entire list to file.
+            pokedex.WriteToFile(fileName, myPokemons);
         }
 
         public static void viewList(List<Pokemon> pokemons,
@@ -143,8 +156,8 @@ namespace csharp_class_project
                     Console.WriteLine($"{pok.Counter+1,3})\t{pok.Name,-25}\t{pok.Url}");
                 }
                 Console.WriteLine();
-                input = CLI.Prompt($"Enter a number to add the Pokemon to your Pokedex,\n" +
-                                   $"'C' to Continue, or 'M' to return to the Main Menu:  ");
+                input = CLI.Prompt($" Enter a number to add the Pokemon to your Pokedex,\n" +
+                                   $" 'C' to Continue, or 'M' to return to the Main Menu:  ");
 
                 if (input.ToUpper().Equals("C"))
                 {
@@ -156,15 +169,13 @@ namespace csharp_class_project
                     // Check for duplicates
                     if ( myPokemons.Any(pok => pok.Name == pokemons[selection - 1].Name))
                     {
-                        Console.WriteLine("This Pokemon is already in the Pokedex.  Please select another.");
-                        Console.WriteLine("Press any key to continue.");
+                        Console.WriteLine(" This Pokemon is already in the Pokedex.  Please select another.");
+                        Console.WriteLine(" Press any key to continue.");
                         Console.ReadKey();
                     }
                     else
                     {
                         // Add the selected pokemon to the list
-
-                        pokedexCount++;
                         MyPokemon pokey = new MyPokemon
                         {
                             Counter = pokedexCount,
@@ -172,12 +183,12 @@ namespace csharp_class_project
                             Url = pokemons[selection - 1].Url,
                             Comment = ""
                         };
-
                         myPokemons.Add(pokey);
+                        pokedexCount++;
                     }
                 }
 
-            } while (!input.ToUpper().Equals("M"));
+            } while (!input.ToUpper().Equals("M") && pageOfPokemons.Count() != 0);
 
             // Write entire list to file.
             pokedex.WriteToFile(fileName, myPokemons);
